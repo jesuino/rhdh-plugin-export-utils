@@ -60,7 +60,8 @@ do
     # package the dynamic plugin in a container image
     if [ "${INPUTS_BASE_IMAGE_TAG_NAME}" ]
     then
-        PLUGIN_TAG="${INPUTS_BASE_IMAGE_TAG_NAME}/${plugin}"
+        PLUGIN_VERSION=$(grep -o  '"version":\s*".*"' package.json  | sed 's/"//g' | cut -d' ' -f2-)
+        PLUGIN_TAG="${INPUTS_BASE_IMAGE_TAG_NAME}/${plugin}:${PLUGIN_VERSION}"
         npx --yes @janus-idp/cli@${INPUTS_JANUS_CLI_VERSION} package export-dynamic-plugin --tag $PLUGIN_TAG
         if [ $? -eq 0 ] then
             podman push $PLUGIN_TAG
